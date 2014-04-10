@@ -32,10 +32,6 @@
 # define _endian_alwaysinline __forceinline
 #endif
 
-#ifndef BYTE_ORDER
-# error BYTE_ORDER
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,7 +62,7 @@ static _endian_alwaysinline u64 bswap64(u64 v) {
                 (v >> 0x38 & 0x00000000000000ffull);
 }
 
-#if BYTE_ORDER == BIG_ENDIAN
+#if __BIG_ENDIAN__ || __ARMEB__
 static _endian_alwaysinline u16 btoh16(u16 v) { return v; }
 static _endian_alwaysinline u32 btoh32(u32 v) { return v; }
 static _endian_alwaysinline u64 btoh64(u64 v) { return v; }
