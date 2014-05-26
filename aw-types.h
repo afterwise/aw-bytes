@@ -56,19 +56,25 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 
-#if __i386__ || __x86_64__ || __ARM_NEON__
+#if !_have_simd_types
+# if __i386__ || __x86_64__ || __ARM_NEON__
+#  define _have_simd_types 1
 typedef unsigned int u32x4 __attribute__((vector_size(16)));
 typedef float f32x4 __attribute__((vector_size(16)));
-#elif _M_IX86 || _M_X64
+# elif _M_IX86 || _M_X64
+#  define _have_simd_types 1
 typedef __m128i u32x4;
 typedef __m128 f32x4;
-#elif __PPU__ || __SPU || __ppc64__
+# elif __PPU__ || __SPU || __ppc64__
+#  define _have_simd_types 1
 typedef vector unsigned int u32x4;
 typedef vector float f32x4;
-#elif _M_PPC
+# elif _M_PPC
+#  define _have_simd_types 1
 typedef __declspec(align(16)) unsigned int u32x4[4];
 typedef __vector4 f32x4;
-#endif
+# endif
+#endif /* !_have_simd_types */
 
 #ifdef __cplusplus
 } /* extern "C" */

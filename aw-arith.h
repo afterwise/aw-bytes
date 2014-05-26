@@ -256,5 +256,5 @@ _arith_alwaysinline s32 floor_f32(f32 a) {
 } /* extern "C" */
 #endif
 
-#endif /* ARITH_H */
+#endif /* AW_ARITH_H */
 
