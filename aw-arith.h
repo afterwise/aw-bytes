@@ -86,6 +86,37 @@ _arith_alwaysinline f32 sel_f32(f32 x, f32 a, f32 b) { return __fsel(x, a, b); }
 _arith_alwaysinline f32 sel_f32(f32 x, f32 a, f32 b) { return x >= 0.f ? a : b; }
 #endif
 
+_arith_alwaysinline s32 sel_s32(s32 x, s32 a, s32 b) { return a + ((b - a) & asr31(x)); }
+_arith_alwaysinline u32 sel_u32(u32 x, u32 a, u32 b) { return a + ((b - a) & asr31(x)); }
+_arith_alwaysinline s64 sel_s64(s64 x, s64 a, s64 b) { return a + ((b - a) & asr63(x)); }
+_arith_alwaysinline u64 sel_u64(u64 x, u64 a, u64 b) { return a + ((b - a) & asr63(x)); }
+
+_arith_alwaysinline s32 selgtz_s32(s32 x, s32 a, s32 b) { return b + ((a - b) & -asr31(x)); }
+_arith_alwaysinline u32 selgtz_u32(u32 x, u32 a, u32 b) { return b + ((a - b) & -asr31(x)); }
+_arith_alwaysinline s64 selgtz_s64(s64 x, s64 a, s64 b) { return b + ((a - b) & -asr63(x)); }
+_arith_alwaysinline u64 selgtz_u64(u64 x, u64 a, u64 b) { return b + ((a - b) & -asr63(x)); }
+
+_arith_alwaysinline s32 selltz_s32(s32 x, s32 a, s32 b) { return b + ((a - b) & asr31(x)); }
+_arith_alwaysinline u32 selltz_u32(u32 x, u32 a, u32 b) { return b + ((a - b) & asr31(x)); }
+_arith_alwaysinline s64 selltz_s64(s64 x, s64 a, s64 b) { return b + ((a - b) & asr63(x)); }
+_arith_alwaysinline u64 selltz_u64(u64 x, u64 a, u64 b) { return b + ((a - b) & asr63(x)); }
+
+#if __allegrex__
+_arith_alwaysinline s32 selz_s32(s32 x, s32 a, s32 b) {
+	__asm__("movz %0, %1, %2" : "=&r"(b) : "r"(a), "r"(x));
+	return b;
+}
+_arith_alwaysinline u32 selz_u32(u32 x, u32 a, u32 b) {
+	__asm__("movz %0, %1, %2" : "=&r"(b) : "r"(a), "r"(x));
+	return b;
+}
+#else
+_arith_alwaysinline s32 selz_s32(s32 x, s32 a, s32 b) { return a + ((b - a) & asr31(-(s32) x | x)); }
+_arith_alwaysinline u32 selz_u32(u32 x, u32 a, u32 b) { return a + ((b - a) & asr31(-(s32) x | x)); }
+#endif
+_arith_alwaysinline s64 selz_s64(s64 x, s64 a, s64 b) { return a + ((b - a) & asr63(-(s64) x | x)); }
+_arith_alwaysinline u64 selz_u64(u64 x, u64 a, u64 b) { return a + ((b - a) & asr63(-(s64) x | x)); }
+
 _arith_alwaysinline s32 min_s32(s32 a, s32 b) { return a < b ? a : b; }
 _arith_alwaysinline s64 min_s64(s64 a, s64 b) { return a < b ? a : b; }
 _arith_alwaysinline u32 min_u32(u32 a, u32 b) { return b + ((a - b) & asr31(a - b)); }
