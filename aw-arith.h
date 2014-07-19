@@ -117,6 +117,16 @@ _arith_alwaysinline u32 selz_u32(u32 x, u32 a, u32 b) { return a + ((b - a) & as
 _arith_alwaysinline s64 selz_s64(s64 x, s64 a, s64 b) { return a + ((b - a) & asr63(-(s64) x | x)); }
 _arith_alwaysinline u64 selz_u64(u64 x, u64 a, u64 b) { return a + ((b - a) & asr63(-(s64) x | x)); }
 
+_arith_alwaysinline s32 incwrap_s32(s32 x, s32 mx) { return sel_s32(mx - (x + 1), x + 1, 0); }
+_arith_alwaysinline u32 incwrap_u32(u32 x, u32 mx) { return sel_s32(mx - (x + 1), x + 1, 0); }
+_arith_alwaysinline s64 incwrap_s64(s64 x, s64 mx) { return sel_s64(mx - (x + 1), x + 1, 0); }
+_arith_alwaysinline u64 incwrap_u64(u64 x, u64 mx) { return sel_s64(mx - (x + 1), x + 1, 0); }
+
+_arith_alwaysinline s32 decwrap_s32(s32 x, s32 mx) { return sel_s32(x - 1, x - 1, mx); }
+_arith_alwaysinline u32 decwrap_u32(u32 x, u32 mx) { return sel_s32(x - 1, x - 1, mx); }
+_arith_alwaysinline s64 decwrap_s64(s64 x, s64 mx) { return sel_s64(x - 1, x - 1, mx); }
+_arith_alwaysinline u64 decwrap_u64(u64 x, u64 mx) { return sel_s64(x - 1, x - 1, mx); }
+
 _arith_alwaysinline s32 min_s32(s32 a, s32 b) { return a < b ? a : b; }
 _arith_alwaysinline s64 min_s64(s64 a, s64 b) { return a < b ? a : b; }
 _arith_alwaysinline u32 min_u32(u32 a, u32 b) { return b + ((a - b) & asr31(a - b)); }
