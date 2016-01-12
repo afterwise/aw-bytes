@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2016 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -55,6 +55,10 @@ typedef unsigned long long u64;
 
 typedef float f32;
 typedef double f64;
+
+typedef s16 fx16;
+typedef s32 fx32;
+typedef s64 fx64;
 
 #if !_have_simd_types
 # if __i386__ || __x86_64__ || __ARM_NEON__
