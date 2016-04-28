@@ -56,9 +56,9 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 
-typedef s16 fx16;
-typedef s32 fx32;
-typedef s64 fx64;
+typedef s16 q16;
+typedef s32 q32;
+typedef s64 q64;
 
 #if !_have_simd_types
 # if __i386__ || __x86_64__ || __ARM_NEON__

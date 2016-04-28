@@ -303,53 +303,53 @@ _arith_alwaysinline s64 floor_f64(f64 a) {
 	return round_f64(-0.5f + (a + a)) >> 1;
 }
 
-/* fx16 */
-_arith_alwaysinline fx16 s16_to_fx16(s16 s, s16 frac) { return s << frac; }
-_arith_alwaysinline s16 fx16_to_s16(fx16 fx, s16 frac) { return s >> frac; }
-_arith_alwaysinline fx16 f32_to_fx16(f32 f, s16 frac) {
+/* q16 */
+_arith_alwaysinline q16 s16_to_q16(s16 s, s16 frac) { return s << frac; }
+_arith_alwaysinline s16 q16_to_s16(q16 q, s16 frac) { return q >> frac; }
+_arith_alwaysinline q16 f32_to_q16(f32 f, s16 frac) {
 	return (trunc_f32(floor_f32(f)) << frac) | round_f32((f - floor_f32(f)) * (1 << frac));
 }
-_arith_alwaysinline f32 fx16_to_f32(fx16 x, s16 frac) {
+_arith_alwaysinline f32 q16_to_f32(q16 x, s16 frac) {
 	return (x >> frac) + (x & ((1 << frac) - 1)) / (f32) (1 << frac);
 }
-_arith_alwaysinline fx16 add_fx16(fx16 x, fx16 y) { return x + y; }
-_arith_alwaysinline fx16 sub_fx16(fx16 x, fx16 y) { return x - y; }
-_arith_alwaysinline fx16 mul_fx16(fx16 x, fx16 y, s16 frac) { return (x * y) >> frac; }
-_arith_alwaysinline fx16 div_fx16(fx16 x, fx16 y, s16 frac) { return (x << frac) / y; }
-_arith_alwaysinline fx16 neg_fx16(fx16 x) { return -x; }
-_arith_alwaysinline fx16 abs_fx16(fx16 x) { return abs_s32(x); }
+_arith_alwaysinline q16 add_q16(q16 x, q16 y) { return x + y; }
+_arith_alwaysinline q16 sub_q16(q16 x, q16 y) { return x - y; }
+_arith_alwaysinline q16 mul_q16(q16 x, q16 y, s16 frac) { return (x * y) >> frac; }
+_arith_alwaysinline q16 div_q16(q16 x, q16 y, s16 frac) { return (x << frac) / y; }
+_arith_alwaysinline q16 neg_q16(q16 x) { return -x; }
+_arith_alwaysinline q16 abs_q16(q16 x) { return abs_s32(x); }
 
-/* fx32 */
-_arith_alwaysinline fx32 s32_to_fx32(s32 s, s32 frac) { return s << frac; }
-_arith_alwaysinline s32 fx32_to_s32(fx32 fx, s32 frac) { return s >> frac; }
-_arith_alwaysinline fx32 f32_to_fx32(f32 f, s32 frac) {
+/* q32 */
+_arith_alwaysinline q32 s32_to_q32(s32 s, s32 frac) { return s << frac; }
+_arith_alwaysinline s32 q32_to_s32(q32 q, s32 frac) { return q >> frac; }
+_arith_alwaysinline q32 f32_to_q32(f32 f, s32 frac) {
 	return (trunc_f32(floor_f32(f)) << frac) | round_f32((f - floor_f32(f)) * (1 << frac));
 }
-_arith_alwaysinline f32 fx32_to_f32(fx32 x, s32 frac) {
+_arith_alwaysinline f32 q32_to_f32(q32 x, s32 frac) {
 	return (x >> frac) + (x & ((1 << frac) - 1)) / (f32) (1 << frac);
 }
-_arith_alwaysinline fx32 add_fx32(fx32 x, fx32 y) { return x + y; }
-_arith_alwaysinline fx32 sub_fx32(fx32 x, fx32 y) { return x - y; }
-_arith_alwaysinline fx32 mul_fx32(fx32 x, fx32 y, s32 frac) { return (x * y) >> frac; }
-_arith_alwaysinline fx32 div_fx32(fx32 x, fx32 y, s32 frac) { return (x << frac) / y; }
-_arith_alwaysinline fx32 neg_fx32(fx32 x) { return -x; }
-_arith_alwaysinline fx32 abs_fx32(fx32 x) { return abs_s32(x); }
+_arith_alwaysinline q32 add_q32(q32 x, q32 y) { return x + y; }
+_arith_alwaysinline q32 sub_q32(q32 x, q32 y) { return x - y; }
+_arith_alwaysinline q32 mul_q32(q32 x, q32 y, s32 frac) { return (x * y) >> frac; }
+_arith_alwaysinline q32 div_q32(q32 x, q32 y, s32 frac) { return (x << frac) / y; }
+_arith_alwaysinline q32 neg_q32(q32 x) { return -x; }
+_arith_alwaysinline q32 abs_q32(q32 x) { return abs_s32(x); }
 
-/* fx64 */
-_arith_alwaysinline fx64 s64_to_fx64(s64 s, s64 frac) { return s << frac; }
-_arith_alwaysinline s64 fx64_to_s64(fx64 fx, s64 frac) { return s >> frac; }
-_arith_alwaysinline fx64 f64_to_fx64(f64 f, s64 frac) {
+/* q64 */
+_arith_alwaysinline q64 s64_to_q64(s64 s, s64 frac) { return s << frac; }
+_arith_alwaysinline s64 q64_to_s64(q64 q, s64 frac) { return q >> frac; }
+_arith_alwaysinline q64 f64_to_q64(f64 f, s64 frac) {
 	return (trunc_f64(floor_f64(f)) << frac) | round_f64((f - floor_f64(f)) * (imm_s64(1) << frac));
 }
-_arith_alwaysinline f64 fx64_to_f64(fx64 x, s64 frac) {
+_arith_alwaysinline f64 q64_to_f64(q64 x, s64 frac) {
 	return (x >> frac) + (x & ((imm_s64(1) << frac) - 1)) / (f64) (imm_s64(1) << frac);
 }
-_arith_alwaysinline fx64 add_fx64(fx64 x, fx64 y) { return x + y; }
-_arith_alwaysinline fx64 sub_fx64(fx64 x, fx64 y) { return x - y; }
-_arith_alwaysinline fx64 mul_fx64(fx64 x, fx64 y, s64 frac) { return (x * y) >> frac; }
-_arith_alwaysinline fx64 div_fx64(fx64 x, fx64 y, s64 frac) { return (x << frac) / y; }
-_arith_alwaysinline fx64 neg_fx64(fx64 x) { return -x; }
-_arith_alwaysinline fx64 abs_fx64(fx64 x) { return abs_s64(x); }
+_arith_alwaysinline q64 add_q64(q64 x, q64 y) { return x + y; }
+_arith_alwaysinline q64 sub_q64(q64 x, q64 y) { return x - y; }
+_arith_alwaysinline q64 mul_q64(q64 x, q64 y, s64 frac) { return (x * y) >> frac; }
+_arith_alwaysinline q64 div_q64(q64 x, q64 y, s64 frac) { return (x << frac) / y; }
+_arith_alwaysinline q64 neg_q64(q64 x) { return -x; }
+_arith_alwaysinline q64 abs_q64(q64 x) { return abs_s64(x); }
 
 #ifdef __cplusplus
 } /* extern "C" */
