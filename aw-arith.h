@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014-2016 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2024 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -27,17 +27,17 @@
 #include "aw-types.h"
 #include <math.h>
 
-#if !_MSC_VER || _MSC_VER >= 1800
+#if !defined(_MSC_VER) || _MSC_VER >= 1800
 # include <stdbool.h>
 #else
 # include <stddef.h>
 #endif
 
-#if __GNUC__
+#if defined(__GNUC__)
 # define _arith_alwaysinline inline __attribute__((always_inline))
 # define _arith_likely(x) __builtin_expect(!!(x), 1)
 # define _arith_unlikely(x) __builtin_expect(!!(x), 0)
-#elif _MSC_VER
+#elif defined(_MSC_VER)
 # define _arith_alwaysinline __forceinline
 # define _arith_likely(x) (x)
 # define _arith_unlikely(x) (x)
@@ -70,19 +70,19 @@ _arith_alwaysinline s64 asr63(s64 a) { return a >> 63; }
 _arith_alwaysinline s32 abs_s32(s32 a) { return (a ^ asr31(a)) - asr31(a); }
 _arith_alwaysinline s64 abs_s64(s64 a) { return (a ^ asr63(a)) - asr63(a); }
 
-#if __PPU__
+#if defined(__PPU__)
 _arith_alwaysinline f32 abs_f32(f32 a) { return __fabsf(a); }
-#elif _M_PPC
+#elif defined(_M_PPC)
 _arith_alwaysinline f32 abs_f32(f32 a) { return __fabsf(a); }
-#elif __allegrex__
+#elif defined(__allegrex__)
 _arith_alwaysinline f32 abs_f32(f32 a) { f32 r; __asm__("abs.s %0, %1" : "=r"(r) : "r"(a)); return r; }
 #else
 _arith_alwaysinline f32 abs_f32(f32 a) { return fabsf(a); }
 #endif
 
-#if __PPU__
+#if defined(__PPU__)
 _arith_alwaysinline f32 sel_f32(f32 x, f32 a, f32 b) { return __fsels(x, a, b); }
-#elif _M_PPC
+#elif defined(_M_PPC)
 _arith_alwaysinline f32 sel_f32(f32 x, f32 a, f32 b) { return __fsel(x, a, b); }
 #else
 _arith_alwaysinline f32 sel_f32(f32 x, f32 a, f32 b) { return x >= 0.f ? a : b; }
@@ -103,7 +103,7 @@ _arith_alwaysinline u32 selltz_u32(u32 x, u32 a, u32 b) { return b + ((a - b) & 
 _arith_alwaysinline s64 selltz_s64(s64 x, s64 a, s64 b) { return b + ((a - b) & asr63(x)); }
 _arith_alwaysinline u64 selltz_u64(u64 x, u64 a, u64 b) { return b + ((a - b) & asr63(x)); }
 
-#if __allegrex__
+#if defined(__allegrex__)
 _arith_alwaysinline s32 selz_s32(s32 x, s32 a, s32 b) {
 	__asm__("movz %0, %1, %2" : "=&r"(b) : "r"(a), "r"(x));
 	return b;
@@ -161,18 +161,18 @@ _arith_alwaysinline u32 clz_u32(u32 a) {
 	if (_arith_unlikely(a == 0))
 		return 32;
 
-# if __i386__ || __x86_64__
+# if defined(__i386__) || defined(__x86_64__)
         __asm__ ("bsr %0, %1" : "=r" (r) : "r" (a));
 	r = 31 - r;
-# elif _M_IX86 || _M_X64
+# elif defined(_M_IX86) || defined(_M_X64)
         __asm bsr eax, a;
         __asm mov r, eax;
 	r = 31 - r;
-# elif __PPU__
+# elif defined(__PPU__)
         r = __cntlzw(a);
-# elif __SPU__
+# elif defined(__SPU__)
         r = si_to_uint(si_clz(si_from_uint(a)));
-# elif __arm__
+# elif defined(__arm__)
         __asm__ ("clz %0, %1" : "=r" (r) : "r" (a) : "cc");
 # else
 # warning no clz
@@ -223,12 +223,12 @@ _arith_alwaysinline s32 log2_f32(f32 a) {
 }
 
 _arith_alwaysinline s32 trunc_f32(f32 a) {
-#if __i386__ || __x86_64__
+#if defined(__i386__) || defined(__x86_64__)
 	s32 t;
 
 	asm ("fisttpl %0" : "=g" (t) : "t" (a));
 	return t;
-#elif _M_IX86 || _M_X64
+#elif defined(_M_IX86) || defined(_M_X64)
 	s32 t;
 
 	__asm fisttp dword ptr[t];
@@ -239,12 +239,12 @@ _arith_alwaysinline s32 trunc_f32(f32 a) {
 }
 
 _arith_alwaysinline s64 trunc_f64(f64 a) {
-#if __i386__ || __x86_64__
+#if defined(__i386__) || defined(__x86_64__)
 	s64 t;
 
 	asm ("fisttpq %0" : "=g" (t) : "t" (a));
 	return t;
-#elif _M_IX86 || _M_X64
+#elif defined(_M_IX86) || defined(_M_X64)
 	s64 t;
 
 	__asm fisttp dword ptr[t];
@@ -255,12 +255,12 @@ _arith_alwaysinline s64 trunc_f64(f64 a) {
 }
 
 _arith_alwaysinline s32 round_f32(f32 a) {
-#if __i386__ || __x86_64__
+#if defined(__i386__) || defined(__x86_64__)
 	s32 t;
 
 	asm("fistpl %0" : "=g" (t) : "t" (a));
 	return t;
-#elif _M_IX86 || _M_X64
+#elif defined(_M_IX86) || defined(_M_X64)
 	s32 t;
 
 	__asm fistp dword ptr[t];
@@ -271,13 +271,13 @@ _arith_alwaysinline s32 round_f32(f32 a) {
 }
 
 _arith_alwaysinline s64 round_f64(f64 a) {
-#if __i386__ || __x86_64__
+#if defined(__i386__) || defined(__x86_64__)
 	s64 t;
 
 	asm("fistpq %0" : "=g" (t) : "t" (a));
 
 	return t;
-#elif _M_IX86 || _M_X64
+#elif defined(_M_IX86) || defined(_M_X64)
 	s64 t;
 
 	__asm fistp dword ptr[t];

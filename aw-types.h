@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014-2016 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2024 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 #ifndef AW_TYPES_H
 #define AW_TYPES_H
 
-#if _MSC_VER
+#if defined(_MSC_VER)
 # define imm_s64(x) (x##i64)
 # define imm_u64(x) (x##ui64)
 #else
@@ -45,7 +45,7 @@ typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
 
-#if _MSC_VER
+#if defined(_MSC_VER)
 typedef signed __int64 s64;
 typedef unsigned __int64 u64;
 #else
@@ -60,25 +60,29 @@ typedef s16 q16;
 typedef s32 q32;
 typedef s64 q64;
 
-#if !_have_simd_types
-# if __i386__ || __x86_64__ || __ARM_NEON__
+#if !defined(_have_simd_types)
+# if defined(__i386__) || defined(__x86_64__) || defined(__ARM_NEON)
 #  define _have_simd_types 1
 typedef unsigned int u32x4 __attribute__((vector_size(16)));
 typedef float f32x4 __attribute__((vector_size(16)));
-# elif _M_IX86 || _M_X64
+# elif defined(_M_IX86) || defined(_M_X64)
 #  define _have_simd_types 1
 typedef __m128i u32x4;
 typedef __m128 f32x4;
-# elif __PPU__ || __SPU || __ppc64__
+#elif defined(_M_ARM64)
+#define _have_simd_types 1
+typedef uint32x4_t u32x4;
+typedef float32x4_t f32x4;
+# elif defined(__PPU__) || defined(__SPU) || defined(__ppc64__)
 #  define _have_simd_types 1
 typedef vector unsigned int u32x4;
 typedef vector float f32x4;
-# elif _M_PPC
+# elif defined(_M_PPC)
 #  define _have_simd_types 1
 typedef __declspec(align(16)) unsigned int u32x4[4];
 typedef __vector4 f32x4;
 # endif
-#endif /* !_have_simd_types */
+#endif /* !defined(_have_simd_types) */
 
 #ifdef __cplusplus
 } /* extern "C" */

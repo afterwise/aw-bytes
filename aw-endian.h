@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014-2016 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2024 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,9 @@
 
 #include "aw-types.h"
 
-#if __GNUC__
+#if defined(__GNUC__)
 # define _endian_alwaysinline inline __attribute__((always_inline))
-#elif _MSC_VER
+#elif defined(_MSC_VER)
 # define _endian_alwaysinline __forceinline
 #endif
 
@@ -62,7 +62,10 @@ static _endian_alwaysinline u64 bswap64(u64 v) {
                 (v >> 0x38 & 0x00000000000000ffull);
 }
 
-#if __BIG_ENDIAN__ || __ARMEB__
+#if defined(__BIG_ENDIAN__) || \
+	defined(__ARMEB__) || defined(__THUMBEB__) || \
+	defined(_M_PPC) || defined(__ppc64__) || \
+	defined(__PPU__) || defined(__SPU)
 static _endian_alwaysinline u16 btoh16(u16 v) { return v; }
 static _endian_alwaysinline u32 btoh32(u32 v) { return v; }
 static _endian_alwaysinline u64 btoh64(u64 v) { return v; }
