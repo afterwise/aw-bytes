@@ -54,6 +54,9 @@ typedef unsigned int u32;
 #if defined(_MSC_VER)
 typedef signed __int64 s64;
 typedef unsigned __int64 u64;
+#elif defined(__WORDSIZE) && __WORDSIZE == 64
+typedef signed long s64;
+typedef unsigned long u64;
 #else
 typedef signed long long s64;
 typedef unsigned long long u64;
