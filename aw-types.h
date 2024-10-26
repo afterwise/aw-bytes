@@ -24,6 +24,12 @@
 #ifndef AW_TYPES_H
 #define AW_TYPES_H
 
+#if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_ARM64))
+# include <intrin.h>
+#elif defined(__i386__) || defined(__x86_64__)
+# include <immintrin.h>
+#endif
+
 #if defined(_MSC_VER)
 # define imm_s64(x) (x##i64)
 # define imm_u64(x) (x##ui64)
