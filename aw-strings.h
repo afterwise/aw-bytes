@@ -25,6 +25,10 @@
 #define AW_STRINGS_H
 
 #include <stdarg.h>
+#include <stddef.h>
+#if !defined(_MSC_VER) || _MSC_VER >= 1600
+# include <stdint.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #if !defined(_MSC_VER)
@@ -49,6 +53,12 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#if defined(_MSC_VER)
+typedef signed __int64 strings_ssize_t;
+#else
+typedef ssize_t strings_ssize_t;
 #endif
 
 #if defined(__GNUC__)
@@ -98,6 +108,11 @@ static int _strncasecmp(const char *s1, const char *s2, size_t n) {
 	return strncasecmp(s1, s2, n);
 }
 
+_strings_alwaysinline
+static const char *_strcasestr(const char *haystack, const char *needle) {
+	return strcasestr(haystack, needle);
+}
+
 #elif defined(_MSC_VER)
 
 _strings_alwaysinline
@@ -144,6 +159,16 @@ static int _strcasecmp(const char *s1, const char *s2) {
 _strings_alwaysinline
 static int _strncasecmp(const char *s1, const char *s2, size_t n) {
 	return _strnicmp(s1, s2, n);
+}
+
+_strings_alwaysinline
+static const char *_strcasestr(const char *haystack, const char *needle) {
+	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
+	strings_ssize_t n = (strings_ssize_t) (needle ? strlen(needle) : 0);
+	for (; h >= n; --h, ++haystack)
+		if (_strncasecmp(haystack, needle, n) == 0)
+			return haystack;
+	return NULL;
 }
 
 #endif // defined(_MSC_VER)
