@@ -33,8 +33,10 @@
 
 #if defined(__GNUC__)
 # define _strings_alwaysinline inline __attribute__((always_inline))
+# define _strings_unused __attribute__((unused))
 #elif defined(_MSC_VER)
 # define _strings_alwaysinline __forceinline
+# define _strings_unused
 #endif
 
 #if defined(__GNUC__)
@@ -52,31 +54,31 @@ extern "C" {
 #if defined(__GNUC__)
 
 _strings_alwaysinline
-static int _vsscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
+static int _vstrscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
 	return vsscanf(str, format, ap);
 }
 
 _strings_scanformat(2, 3)
-_strings_alwaysinline
-static int _sscanf(const char *__restrict str, const char *__restrict format, ...) {
+_strings_unused
+static inline int _strscanf(const char *__restrict str, const char *__restrict format, ...) {
 	va_list ap;
 	va_start(ap, format);
-	int err = _vsscanf(str, format, ap);
+	int err = _vstrscanf(str, format, ap);
 	va_end(ap);
 	return err;
 }
 
 _strings_alwaysinline
-static int _vsnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
+static int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
 	return vsnprintf(str, size, format, ap);
 }
 
 _strings_printformat(3, 4)
-_strings_alwaysinline
-static int _snprintf(char *__restrict str, size_t size, const char *__restrict format, ...) {
+_strings_unused
+static inline int _strnprintf(char *__restrict str, size_t size, const char *__restrict format, ...) {
 	va_list ap;
 	va_start(ap, format);
-	int err = _vsnprintf(str, size, format, ap);
+	int err = _vstrnprintf(str, size, format, ap);
 	va_end(ap);
 	return err;
 }
@@ -99,31 +101,31 @@ static int _strncasecmp(const char *s1, const char *s2, size_t n) {
 #elif defined(_MSC_VER)
 
 _strings_alwaysinline
-static int _vsscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
+static int _vstrscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
 	return vsscanf_s(str, format, ap);
 }
 
 _strings_scanformat(2, 3)
-_strings_alwaysinline
-static int _sscanf(const char *__restrict str, const char *__restrict format, ...) {
+_strings_unused
+static inline int _strscanf(const char *__restrict str, const char *__restrict format, ...) {
 	va_list ap;
 	va_start(ap, format);
-	int err = _vsscanf(str, format, ap);
+	int err = _vstrscanf(str, format, ap);
 	va_end(ap);
 	return err;
 }
 
 _strings_alwaysinline
-static int _vsnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
+static int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
 	return vsnprintf_s(str, size, _TRUNCATE, format, ap);
 }
 
 _strings_printformat(3, 4)
-_strings_alwaysinline
-static int _snprintf(char *__restrict str, size_t size, const char *__restrict format, ...) {
+_strings_unused
+static inline int _strnprintf(char *__restrict str, size_t size, const char *__restrict format, ...) {
 	va_list ap;
 	va_start(ap, format);
-	int err = _vsnprintf(str, size, format, ap);
+	int err = _vstrnprintf(str, size, format, ap);
 	va_end(ap);
 	return err;
 }
