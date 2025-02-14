@@ -24,6 +24,10 @@
 #ifndef AW_TYPES_H
 #define AW_TYPES_H
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1600
+# include <stdint.h>
+#endif
+
 #if defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64) || defined(_M_ARM64))
 # include <intrin.h>
 #elif defined(__i386__) || defined(__x86_64__)
@@ -31,9 +35,21 @@
 #endif
 
 #if defined(_MSC_VER)
+# define fmt_s64(...) "%" #__VA_ARGS__ "I64d"
+# define fmt_u64(...) "%" #__VA_ARGS__ "I64u"
+# define fmt_x64(...) "%" #__VA_ARGS__ "I64x"
 # define imm_s64(x) (x##i64)
 # define imm_u64(x) (x##ui64)
+#elif defined(__WORDSIZE) && __WORDSIZE == 64
+# define fmt_s64(...) "%" #__VA_ARGS__ "ld"
+# define fmt_u64(...) "%" #__VA_ARGS__ "lu"
+# define fmt_x64(...) "%" #__VA_ARGS__ "lx"
+# define imm_s64(x) (x##l)
+# define imm_u64(x) (x##ul)
 #else
+# define fmt_s64(...) "%" #__VA_ARGS__ "lld"
+# define fmt_u64(...) "%" #__VA_ARGS__ "llu"
+# define fmt_x64(...) "%" #__VA_ARGS__ "llx"
 # define imm_s64(x) (x##ll)
 # define imm_u64(x) (x##ull)
 #endif
