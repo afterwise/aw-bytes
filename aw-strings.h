@@ -24,7 +24,12 @@
 #ifndef AW_STRINGS_H
 #define AW_STRINGS_H
 
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #include <stdarg.h>
+#if !defined(_MSC_VER) || _MSC_VER >= 1800
+# include <stdbool.h>
+#endif
 #include <stddef.h>
 #if !defined(_MSC_VER) || _MSC_VER >= 1600
 # include <stdint.h>
@@ -94,8 +99,8 @@ static inline int _strnprintf(char *__restrict str, size_t size, const char *__r
 }
 
 _strings_alwaysinline
-static size_t _strlcpy(char *dst, const char *src, size_t dstsize) {
-	return strlcpy(dst, src, dstsize);
+static bool _strcpy(char *dst, size_t dstsize, const char *src) {
+	return strcpy_s(dst, dstsize, src) == 0;
 }
 
 _strings_alwaysinline
@@ -146,9 +151,8 @@ static inline int _strnprintf(char *__restrict str, size_t size, const char *__r
 }
 
 _strings_alwaysinline
-static size_t _strlcpy(char *dst, const char *src, size_t dstsize) {
-	errno_t err = strncpy_s(dst, dstsize, src, _TRUNCATE);
-	return (err == 0 || err == STRUNCATE) ? strlen(dst) : 0;
+static bool _strcpy(char *dst, size_t dstsize, const char *src) {
+	return strcpy_s(dst, dstsize, src) == 0;
 }
 
 _strings_alwaysinline
