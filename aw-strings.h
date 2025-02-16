@@ -107,7 +107,8 @@ _strings_unused
 static bool _strcpy(char *dst, size_t dstsize, const char *src) {
 	if (dst == nullptr || dstsize == 0 || src == nullptr)
 		return false;
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
+		defined(__DragonFly__) || defined(__ORBIS__) || defined(__PROSPERO__)
 	return strlcpy(dst, src, dstsize) < dstsize;
 #elif defined(__GNUC__)
 	strncpy(dst, src, dstsize);
@@ -140,7 +141,7 @@ static int _strncasecmp(const char *s1, const char *s2, size_t n) {
 
 _strings_alwaysinline
 static const char *_strcasestr(const char *haystack, const char *needle) {
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !(defined(__ORBIS__) || defined(__PROSPERO__))
 	return strcasestr(haystack, needle);
 #elif defined(_MSC_VER)
 	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
