@@ -143,7 +143,7 @@ _strings_alwaysinline
 static const char *_strcasestr(const char *haystack, const char *needle) {
 #if defined(__GNUC__) && !(defined(__ORBIS__) || defined(__PROSPERO__))
 	return strcasestr(haystack, needle);
-#elif defined(_MSC_VER)
+#else
 	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
 	strings_ssize_t n = (strings_ssize_t) (needle ? strlen(needle) : 0);
 	for (; h >= n; --h, ++haystack)
