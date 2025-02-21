@@ -117,7 +117,19 @@ static bool _strcpy(char *dst, size_t dstsize, const char *src) {
 	dst[dstsize - 1] = 0;
 	return false;
 #elif defined(_MSC_VER)
-	return strcpy_s(dst, dstsize, src) == 0;
+	return strncpy_s(dst, dstsize, src, _TRUNCATE) == 0;
+#endif
+}
+
+_strings_alwaysinline
+_strings_unused
+static bool _strcat(char* dst, size_t dstsize, const char* src) {
+	if (dst == nullptr || dstsize == 0 || src == nullptr)
+		return false;
+#if defined(__GNUC__)
+	return strncat(dst, src, dstsize - strlen(dst) - 1) != nullptr;
+#elif defined(_MSC_VER)
+	return strncat_s(dst, dstsize, src, _TRUNCATE) == 0;
 #endif
 }
 
