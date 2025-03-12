@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014-2024 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2025 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -32,18 +32,21 @@
 #if !defined(_MSC_VER) || _MSC_VER >= 1600
 # include <stdint.h>
 #endif
-#include <stdio.h>
-#include <string.h>
-#if !defined(_MSC_VER)
-# include <strings.h>
-#endif
+#include <sys/types.h>
 
-#if defined(__GNUC__)
-# define _strings_alwaysinline inline __attribute__((always_inline))
-# define _strings_unused __attribute__((unused))
-#elif defined(_MSC_VER)
-# define _strings_alwaysinline __forceinline
-# define _strings_unused
+#if defined(_strings_dllexport)
+# if defined(_MSC_VER)
+#  define _strings_api extern __declspec(dllexport)
+# elif defined(__GNUC__)
+#  define _strings_api __attribute__((visibility("default"))) extern
+# endif
+#elif defined(_strings_dllimport)
+# if defined(_MSC_VER)
+#  define _strings_api extern __declspec(dllimport)
+# endif
+#endif
+#ifndef _strings_api
+# define _strings_api extern
 #endif
 
 #if defined(__GNUC__)
@@ -64,106 +67,22 @@ typedef signed __int64 strings_ssize_t;
 typedef ssize_t strings_ssize_t;
 #endif
 
-_strings_alwaysinline
-static int _vstrscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
-#if defined(__GNUC__)
-	return vsscanf(str, format, ap);
-#elif defined(_MSC_VER)
-	return vsscanf_s(str, format, ap);
-#endif
-}
-
 _strings_scanformat(2, 3)
-_strings_unused
-static inline int _strscanf(const char *__restrict str, const char *__restrict format, ...) {
-	va_list ap;
-	va_start(ap, format);
-	int err = _vstrscanf(str, format, ap);
-	va_end(ap);
-	return err;
-}
-
-_strings_alwaysinline
-static int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
-#if defined(__GNUC__)
-	return vsnprintf(str, size, format, ap);
-#elif defined(_MSC_VER)
-	return vsnprintf_s(str, size, _TRUNCATE, format, ap);
-#endif
-}
+_strings_api int _strscanf(const char *__restrict str, const char *__restrict format, ...);
+_strings_api int _vstrscanf(const char *__restrict str, const char *__restrict format, va_list ap);
 
 _strings_printformat(3, 4)
-_strings_unused
-static inline int _strnprintf(char *__restrict str, size_t size, const char *__restrict format, ...) {
-	va_list ap;
-	va_start(ap, format);
-	int err = _vstrnprintf(str, size, format, ap);
-	va_end(ap);
-	return err;
-}
+_strings_api int _strnprintf(char *__restrict str, size_t size, const char *__restrict format, ...);
+_strings_api int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap);
 
-_strings_alwaysinline
-_strings_unused
-static bool _strcpy(char *dst, size_t dstsize, const char *src) {
-	if (dst == nullptr || dstsize == 0 || src == nullptr)
-		return false;
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
-		defined(__DragonFly__) || defined(__ORBIS__) || defined(__PROSPERO__)
-	return strlcpy(dst, src, dstsize) < dstsize;
-#elif defined(__GNUC__)
-	strncpy(dst, src, dstsize);
-	if (dst[dstsize - 1] == 0)
-		return true;
-	dst[dstsize - 1] = 0;
-	return false;
-#elif defined(_MSC_VER)
-	return strncpy_s(dst, dstsize, src, _TRUNCATE) == 0;
-#endif
-}
+_strings_api char* _strdup(const char* str);
+_strings_api bool _strcpy(char *dst, size_t dstsize, const char *src);
+_strings_api bool _strcat(char* dst, size_t dstsize, const char* src);
 
-_strings_alwaysinline
-_strings_unused
-static bool _strcat(char* dst, size_t dstsize, const char* src) {
-	if (dst == nullptr || dstsize == 0 || src == nullptr)
-		return false;
-#if defined(__GNUC__)
-	return strncat(dst, src, dstsize - strlen(dst) - 1) != nullptr;
-#elif defined(_MSC_VER)
-	return strncat_s(dst, dstsize, src, _TRUNCATE) == 0;
-#endif
-}
+_strings_api int _strcasecmp(const char *s1, const char *s2);
+_strings_api int _strncasecmp(const char *s1, const char *s2, size_t n);
 
-_strings_alwaysinline
-static int _strcasecmp(const char *s1, const char *s2) {
-#if defined(__GNUC__)
-	return strcasecmp(s1, s2);
-#elif defined(_MSC_VER)
-	return _stricmp(s1, s2);
-#endif
-}
-
-_strings_alwaysinline
-static int _strncasecmp(const char *s1, const char *s2, size_t n) {
-#if defined(__GNUC__)
-	return strncasecmp(s1, s2, n);
-#elif defined(_MSC_VER)
-	return _strnicmp(s1, s2, n);
-#endif
-}
-
-_strings_alwaysinline
-static const char *_strcasestr(const char *haystack, const char *needle) {
-#if defined(__GNUC__) && !(defined(__ORBIS__) || defined(__PROSPERO__))
-	return strcasestr(haystack, needle);
-#else
-	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
-	strings_ssize_t n = (strings_ssize_t) (needle ? strlen(needle) : 0);
-	for (; h >= n; --h, ++haystack)
-		if (_strncasecmp(haystack, needle, n) == 0)
-			return haystack;
-	return NULL;
-#endif
-}
+_strings_api const char *_strcasestr(const char *haystack, const char *needle);
 
 #ifdef __cplusplus
 } /* extern "C" */

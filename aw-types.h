@@ -1,6 +1,6 @@
 
 /*
-   Copyright (c) 2014-2024 Malte Hildingsson, malte (at) afterwi.se
+   Copyright (c) 2014-2025 Malte Hildingsson, malte (at) afterwi.se
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
@@ -86,16 +86,16 @@ typedef s32 q32;
 typedef s64 q64;
 
 #if !defined(_have_simd_types)
-# if defined(__i386__) || defined(__x86_64__) || defined(__ARM_NEON)
-#  define _have_simd_types 1
-typedef unsigned int u32x4 __attribute__((vector_size(16)));
-typedef float f32x4 __attribute__((vector_size(16)));
-# elif defined(_M_IX86) || defined(_M_X64)
+# if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
 #  define _have_simd_types 1
 typedef __m128i u32x4;
 typedef __m128 f32x4;
-#elif defined(_M_ARM64)
-#define _have_simd_types 1
+# elif defined(__ARM_NEON)
+#  define _have_simd_types 1
+typedef unsigned int u32x4 __attribute__((vector_size(16)));
+typedef float f32x4 __attribute__((vector_size(16)));
+# elif defined(_M_ARM64)
+#  define _have_simd_types 1
 typedef uint32x4_t u32x4;
 typedef float32x4_t f32x4;
 # elif defined(__PPU__) || defined(__SPU) || defined(__ppc64__)
