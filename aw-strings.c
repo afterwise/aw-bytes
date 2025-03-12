@@ -36,7 +36,6 @@
 #include "aw-strings.h"
 
 #include <stdio.h>
-#include <string.h>
 #if !defined(_MSC_VER)
 # include <strings.h>
 #endif
@@ -73,13 +72,11 @@ int _strnprintf(char *__restrict str, size_t size, const char *__restrict format
 	return err;
 }
 
+#if !defined(_MSC_VER)
 char* _strdup(const char* str) {
-#if defined(__GNUC__)
 	return strdup(str);
-#elif defined(_MSC_VER)
-	return _strdup(str);
-#endif
 }
+#endif
 
 bool _strcpy(char *dst, size_t dstsize, const char *src) {
 	if (dst == NULL || dstsize == 0 || src == NULL)

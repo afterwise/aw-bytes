@@ -32,6 +32,7 @@
 #if !defined(_MSC_VER) || _MSC_VER >= 1600
 # include <stdint.h>
 #endif
+#include <string.h>
 #include <sys/types.h>
 
 #if defined(_strings_dllexport)
@@ -75,7 +76,9 @@ _strings_printformat(3, 4)
 _strings_api int _strnprintf(char *__restrict str, size_t size, const char *__restrict format, ...);
 _strings_api int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap);
 
+#if !defined(_MSC_VER)
 _strings_api char* _strdup(const char* str);
+#endif
 _strings_api bool _strcpy(char *dst, size_t dstsize, const char *src);
 _strings_api bool _strcat(char* dst, size_t dstsize, const char* src);
 
