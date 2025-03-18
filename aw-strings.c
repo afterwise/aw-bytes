@@ -21,6 +21,7 @@
  */
 
 #ifndef _strings_nofeatures
+#define __STDC_WANT_LIB_EXT1__ 1
 # if defined(_WIN32)
 #  define WIN32_LEAN_AND_MEAN 1
 # elif defined(__linux__)
@@ -85,14 +86,25 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 		defined(__DragonFly__) || defined(__ORBIS__) || defined(__PROSPERO__)
 	return strlcpy(dst, src, dstsize) < dstsize;
 #elif defined(__GNUC__)
-	strncpy(dst, src, dstsize);
-	if (dst[dstsize - 1] == 0)
-		return true;
-	dst[dstsize - 1] = 0;
-	return false;
+	size_t len = strlen(src);
+	bool trunc = false;
+	if (len > dstsize - 1)
+	{
+		len = dstsize - 1;
+		trunc = true;
+	}
+	memcpy(dst, src, len);
+	dst[len] = 0;
+	return !trunc;
 #elif defined(_MSC_VER)
 	return strncpy_s(dst, dstsize, src, _TRUNCATE) == 0;
 #endif
+}
+
+bool _strncpy(char *dst, size_t dstsize, const char *src, size_t len) {
+	if (dst == NULL || dstsize == 0 || src == NULL)
+		return false;
+	return strncpy_s(dst, dstsize, src, len) == 0;
 }
 
 bool _strcat(char* dst, size_t dstsize, const char* src) {

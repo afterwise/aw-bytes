@@ -80,6 +80,7 @@ _strings_api int _vstrnprintf(char *__restrict str, size_t size, const char *__r
 _strings_api char* _strdup(const char* str);
 #endif
 _strings_api bool _strcpy(char *dst, size_t dstsize, const char *src);
+_strings_api bool _strncpy(char *dst, size_t dstsize, const char *src, size_t len);
 _strings_api bool _strcat(char* dst, size_t dstsize, const char* src);
 
 _strings_api int _strcasecmp(const char *s1, const char *s2);
