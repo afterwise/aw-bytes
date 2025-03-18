@@ -85,36 +85,36 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 		defined(__DragonFly__) || defined(__ORBIS__) || defined(__PROSPERO__)
 	return strlcpy(dst, src, dstsize) < dstsize;
 #elif !defined(_WIN32)
-	size_t len = strlen(src);
+	size_t n = strlen(src);
 	bool trunc = false;
-	if (len > dstsize - 1)
+	if (n > dstsize - 1)
 	{
-		len = dstsize - 1;
+		n = dstsize - 1;
 		trunc = true;
 	}
-	memcpy(dst, src, len);
-	dst[len] = 0;
+	memcpy(dst, src, n);
+	dst[n] = 0;
 	return !trunc;
 #else
 	return strncpy_s(dst, dstsize, src, _TRUNCATE) == 0;
 #endif
 }
 
-bool _strncpy(char *dst, size_t dstsize, const char *src, size_t len) {
+bool _strncpy(char *dst, size_t dstsize, const char *src, size_t n) {
 	if (dst == NULL || dstsize == 0 || src == NULL)
 		return false;
 #if !defined(_WIN32)
 	bool trunc = false;
-	if (len > dstsize - 1)
+	if (n > dstsize - 1)
 	{
-		len = dstsize - 1;
+		n = dstsize - 1;
 		trunc = true;
 	}
-	strncpy(dst, src, len);
-	dst[len] = 0;
+	strncpy(dst, src, n);
+	dst[n] = 0;
 	return !trunc;
 #else
-	return strncpy_s(dst, dstsize, src, len) == 0;
+	return strncpy_s(dst, dstsize, src, n) == 0;
 #endif
 }
 
