@@ -103,7 +103,6 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 bool _strncpy(char *dst, size_t dstsize, const char *src, size_t n) {
 	if (dst == NULL || dstsize == 0 || src == NULL)
 		return false;
-#if !defined(_WIN32)
 	bool trunc = false;
 	if (n > dstsize - 1)
 	{
@@ -113,9 +112,6 @@ bool _strncpy(char *dst, size_t dstsize, const char *src, size_t n) {
 	strncpy(dst, src, n);
 	dst[n] = 0;
 	return !trunc;
-#else
-	return strncpy_s(dst, dstsize, src, n) == 0;
-#endif
 }
 
 bool _strcat(char* dst, size_t dstsize, const char* src) {
