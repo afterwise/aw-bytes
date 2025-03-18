@@ -21,7 +21,6 @@
  */
 
 #ifndef _strings_nofeatures
-#define __STDC_WANT_LIB_EXT1__ 1
 # if defined(_WIN32)
 #  define WIN32_LEAN_AND_MEAN 1
 # elif defined(__linux__)
@@ -37,14 +36,14 @@
 #include "aw-strings.h"
 
 #include <stdio.h>
-#if !defined(_MSC_VER)
+#if !defined(_WIN32)
 # include <strings.h>
 #endif
 
 int _vstrscanf(const char *__restrict str, const char *__restrict format, va_list ap) {
-#if defined(__GNUC__)
+#if !defined(_WIN32)
 	return vsscanf(str, format, ap);
-#elif defined(_MSC_VER)
+#else
 	return vsscanf_s(str, format, ap);
 #endif
 }
@@ -58,9 +57,9 @@ int _strscanf(const char *__restrict str, const char *__restrict format, ...) {
 }
 
 int _vstrnprintf(char *__restrict str, size_t size, const char *__restrict format, va_list ap) {
-#if defined(__GNUC__)
+#if !defined(_WIN32)
 	return vsnprintf(str, size, format, ap);
-#elif defined(_MSC_VER)
+#else
 	return vsnprintf_s(str, size, _TRUNCATE, format, ap);
 #endif
 }
@@ -73,7 +72,7 @@ int _strnprintf(char *__restrict str, size_t size, const char *__restrict format
 	return err;
 }
 
-#if !defined(_MSC_VER)
+#if !defined(_WIN32)
 char* _strdup(const char* str) {
 	return strdup(str);
 }
@@ -85,7 +84,7 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || \
 		defined(__DragonFly__) || defined(__ORBIS__) || defined(__PROSPERO__)
 	return strlcpy(dst, src, dstsize) < dstsize;
-#elif defined(__GNUC__)
+#elif !defined(_WIN32)
 	size_t len = strlen(src);
 	bool trunc = false;
 	if (len > dstsize - 1)
@@ -96,7 +95,7 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 	memcpy(dst, src, len);
 	dst[len] = 0;
 	return !trunc;
-#elif defined(_MSC_VER)
+#else
 	return strncpy_s(dst, dstsize, src, _TRUNCATE) == 0;
 #endif
 }
@@ -104,37 +103,49 @@ bool _strcpy(char *dst, size_t dstsize, const char *src) {
 bool _strncpy(char *dst, size_t dstsize, const char *src, size_t len) {
 	if (dst == NULL || dstsize == 0 || src == NULL)
 		return false;
+#if !defined(_WIN32)
+	bool trunc = false;
+	if (len > dstsize - 1)
+	{
+		len = dstsize - 1;
+		trunc = true;
+	}
+	strncpy(dst, src, len);
+	dst[len] = 0;
+	return !trunc;
+#else
 	return strncpy_s(dst, dstsize, src, len) == 0;
+#endif
 }
 
 bool _strcat(char* dst, size_t dstsize, const char* src) {
 	if (dst == NULL || dstsize == 0 || src == NULL)
 		return false;
-#if defined(__GNUC__)
+#if !defined(_WIN32)
 	return strncat(dst, src, dstsize - strlen(dst) - 1) != NULL;
-#elif defined(_MSC_VER)
+#else
 	return strncat_s(dst, dstsize, src, _TRUNCATE) == 0;
 #endif
 }
 
 int _strcasecmp(const char *s1, const char *s2) {
-#if defined(__GNUC__)
+#if !defined(_WIN32)
 	return strcasecmp(s1, s2);
-#elif defined(_MSC_VER)
+#else
 	return _stricmp(s1, s2);
 #endif
 }
 
 int _strncasecmp(const char *s1, const char *s2, size_t n) {
-#if defined(__GNUC__)
+#if !defined(_WIN32)
 	return strncasecmp(s1, s2, n);
-#elif defined(_MSC_VER)
+#else
 	return _strnicmp(s1, s2, n);
 #endif
 }
 
 const char *_strcasestr(const char *haystack, const char *needle) {
-#if defined(__GNUC__) && !(defined(__ORBIS__) || defined(__PROSPERO__))
+#if !defined(_WIN32) && !defined(__ORBIS__) && !defined(__PROSPERO__)
 	return strcasestr(haystack, needle);
 #else
 	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
