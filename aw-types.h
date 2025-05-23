@@ -40,7 +40,7 @@
 # define fmt_x64(...) "%" #__VA_ARGS__ "I64x"
 # define imm_s64(x) (x##i64)
 # define imm_u64(x) (x##ui64)
-#elif defined(__WORDSIZE) && __WORDSIZE == 64
+#elif defined(__WORDSIZE) && __WORDSIZE == 64 && defined(__linux__)
 # define fmt_s64(...) "%" #__VA_ARGS__ "ld"
 # define fmt_u64(...) "%" #__VA_ARGS__ "lu"
 # define fmt_x64(...) "%" #__VA_ARGS__ "lx"
@@ -70,7 +70,7 @@ typedef unsigned int u32;
 #if defined(_MSC_VER)
 typedef signed __int64 s64;
 typedef unsigned __int64 u64;
-#elif defined(__WORDSIZE) && __WORDSIZE == 64
+#elif defined(__WORDSIZE) && __WORDSIZE == 64 && defined(__linux__)
 typedef signed long s64;
 typedef unsigned long u64;
 #else
