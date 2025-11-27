@@ -27,7 +27,7 @@
 #include "aw-types.h"
 
 #if defined(__GNUC__)
-# define _endian_alwaysinline inline __attribute__((always_inline))
+# define _endian_alwaysinline __attribute__((always_inline)) inline
 #elif defined(_MSC_VER)
 # define _endian_alwaysinline __forceinline
 #endif
@@ -36,13 +36,15 @@
 extern "C" {
 #endif
 
-static _endian_alwaysinline u16 bswap16(u16 v) {
+_endian_alwaysinline
+static u16 _byteswap16(u16 v) {
         return
                 (v << 0x08 & 0xff00u) |
                 (v >> 0x08 & 0x00ffu);
 }
 
-static _endian_alwaysinline u32 bswap32(u32 v) {
+_endian_alwaysinline
+static u32 _byteswap32(u32 v) {
         return
                 (v << 0x18 & 0xff000000ul) |
                 (v << 0x08 & 0x00ff0000ul) |
@@ -50,7 +52,8 @@ static _endian_alwaysinline u32 bswap32(u32 v) {
                 (v >> 0x18 & 0x000000fful);
 }
 
-static _endian_alwaysinline u64 bswap64(u64 v) {
+_endian_alwaysinline
+static u64 _byteswap64(u64 v) {
         return
                 (v << 0x38 & 0xff00000000000000ull) |
                 (v << 0x28 & 0x00ff000000000000ull) |
@@ -66,37 +69,37 @@ static _endian_alwaysinline u64 bswap64(u64 v) {
 	defined(__ARMEB__) || defined(__THUMBEB__) || \
 	defined(_M_PPC) || defined(__ppc64__) || \
 	defined(__PPU__) || defined(__SPU)
-static _endian_alwaysinline u16 btoh16(u16 v) { return v; }
-static _endian_alwaysinline u32 btoh32(u32 v) { return v; }
-static _endian_alwaysinline u64 btoh64(u64 v) { return v; }
+_endian_alwaysinline static u16 _btoh16(u16 v) { return v; }
+_endian_alwaysinline static u32 _btoh32(u32 v) { return v; }
+_endian_alwaysinline static u64 _btoh64(u64 v) { return v; }
 
-static _endian_alwaysinline u16 ltoh16(u16 v) { return bswap16(v); }
-static _endian_alwaysinline u32 ltoh32(u32 v) { return bswap32(v); }
-static _endian_alwaysinline u64 ltoh64(u64 v) { return bswap64(v); }
+_endian_alwaysinline static u16 _ltoh16(u16 v) { return _byteswap16(v); }
+_endian_alwaysinline static u32 _ltoh32(u32 v) { return _byteswap32(v); }
+_endian_alwaysinline static u64 _ltoh64(u64 v) { return _byteswap64(v); }
 
-static _endian_alwaysinline u16 htob16(u16 v) { return v; }
-static _endian_alwaysinline u32 htob32(u32 v) { return v; }
-static _endian_alwaysinline u64 htob64(u64 v) { return v; }
+_endian_alwaysinline static u16 _htob16(u16 v) { return v; }
+_endian_alwaysinline static u32 _htob32(u32 v) { return v; }
+_endian_alwaysinline static u64 _htob64(u64 v) { return v; }
 
-static _endian_alwaysinline u16 htol16(u16 v) { return bswap16(v); }
-static _endian_alwaysinline u32 htol32(u32 v) { return bswap32(v); }
-static _endian_alwaysinline u64 htol64(u64 v) { return bswap64(v); }
+_endian_alwaysinline static u16 _htol16(u16 v) { return _byteswap16(v); }
+_endian_alwaysinline static u32 _htol32(u32 v) { return _byteswap32(v); }
+_endian_alwaysinline static u64 _htol64(u64 v) { return _byteswap64(v); }
 #else
-static _endian_alwaysinline u16 btoh16(u16 v) { return bswap16(v); }
-static _endian_alwaysinline u32 btoh32(u32 v) { return bswap32(v); }
-static _endian_alwaysinline u64 btoh64(u64 v) { return bswap64(v); }
+_endian_alwaysinline static u16 _btoh16(u16 v) { return _byteswap16(v); }
+_endian_alwaysinline static u32 _btoh32(u32 v) { return _byteswap32(v); }
+_endian_alwaysinline static u64 _btoh64(u64 v) { return _byteswap64(v); }
 
-static _endian_alwaysinline u16 ltoh16(u16 v) { return v; }
-static _endian_alwaysinline u32 ltoh32(u32 v) { return v; }
-static _endian_alwaysinline u64 ltoh64(u64 v) { return v; }
+_endian_alwaysinline static u16 _ltoh16(u16 v) { return v; }
+_endian_alwaysinline static u32 _ltoh32(u32 v) { return v; }
+_endian_alwaysinline static u64 _ltoh64(u64 v) { return v; }
 
-static _endian_alwaysinline u16 htob16(u16 v) { return bswap16(v); }
-static _endian_alwaysinline u32 htob32(u32 v) { return bswap32(v); }
-static _endian_alwaysinline u64 htob64(u64 v) { return bswap64(v); }
+_endian_alwaysinline static u16 _htob16(u16 v) { return _byteswap16(v); }
+_endian_alwaysinline static u32 _htob32(u32 v) { return _byteswap32(v); }
+_endian_alwaysinline static u64 _htob64(u64 v) { return _byteswap64(v); }
 
-static _endian_alwaysinline u16 htol16(u16 v) { return v; }
-static _endian_alwaysinline u32 htol32(u32 v) { return v; }
-static _endian_alwaysinline u64 htol64(u64 v) { return v; }
+_endian_alwaysinline static u16 _htol16(u16 v) { return v; }
+_endian_alwaysinline static u32 _htol32(u32 v) { return v; }
+_endian_alwaysinline static u64 _htol64(u64 v) { return v; }
 #endif
 
 #ifdef __cplusplus
