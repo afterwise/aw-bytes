@@ -26,6 +26,7 @@
 #  define WIN32_LEAN_AND_MEAN 1
 # elif defined(__linux__)
 #  define _BSD_SOURCE 1
+#  define _GNU_SOURCE 1
 #  define _DEFAULT_SOURCE 1
 #  define _POSIX_C_SOURCE 200809L
 #  define _SVID_SOURCE 1
