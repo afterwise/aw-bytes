@@ -24,7 +24,7 @@
 # if defined(_WIN32)
 #  define _CRT_SECURE_NO_WARNINGS 1
 #  define WIN32_LEAN_AND_MEAN 1
-# elif defined(__linux__)
+# elif defined(__linux__) || defined(__NINTENDO__)
 #  define _BSD_SOURCE 1
 #  define _GNU_SOURCE 1
 #  define _DEFAULT_SOURCE 1
