@@ -149,7 +149,7 @@ const char *_strcasestr(const char *haystack, const char *needle) {
 	strings_ssize_t h = (strings_ssize_t) (haystack ? strlen(haystack) : 0);
 	strings_ssize_t n = (strings_ssize_t) (needle ? strlen(needle) : 0);
 	for (; h >= n; --h, ++haystack)
-		if (_strncasecmp(haystack, needle, n) == 0)
+		if (_strncasecmp(haystack, needle, (size_t) n) == 0)
 			return haystack;
 	return NULL;
 #endif
